@@ -205,14 +205,29 @@ def get_redis_via_sentinel(db,
     Redis
         Connected ``Redis`` instance with sentinel connection pool
     """
-    sentinel = sentinel_class(
-        sentinels,
-        socket_timeout=socket_timeout,
-    )
-    return sentinel.master_for(
-        service_name,
-        socket_timeout=socket_timeout,
-        db=db,
-        redis_class=redis_class,
-        connection_pool_class=connection_pool_class,
-    )
+    if 'password' in kwargs:
+        sentinel = sentinel_class(
+            sentinels,
+            socket_timeout=socket_timeout,
+            password=kwargs['password']
+        )
+        return sentinel.master_for(
+            service_name,
+            socket_timeout=socket_timeout,
+            db=db,
+            redis_class=redis_class,
+            connection_pool_class=connection_pool_class,
+            password=kwargs['password']
+        )
+    else:
+        sentinel = sentinel_class(
+            sentinels,
+            socket_timeout=socket_timeout,
+        )
+        return sentinel.master_for(
+            service_name,
+            socket_timeout=socket_timeout,
+            db=db,
+            redis_class=redis_class,
+            connection_pool_class=connection_pool_class,
+        )
